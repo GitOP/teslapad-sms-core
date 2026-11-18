@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="${DPKG_ROOT:-}"
+for rel in Library/TeslaSMSOutBypass/watchdog/sms-out-bypass-watchdog.sh \
+           Library/TeslaSMSOutBypass/watchdog/health-check.sh; do
+  target="${ROOT}/${rel}"
+  if [[ -f "${target}" ]]; then
+    chmod 755 "${target}"
+  fi
+done
+# Do NOT load launchd, arm, or restart CommCenter from postinst.
+exit 0

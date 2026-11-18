@@ -1,0 +1,85 @@
+name: teslapad-sms-core CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  FINALPACKAGE: 1
+  THEOS_PACKAGE_SCHEME: rootless
+
+jobs:
+  resolver-validate:
+    concurrency:
+      group: linux-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y build-essential python3
+      - name: Resolver + synthetic fixture execution (required)
+        run: bash scripts/run_host_tests.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resolver-matrix-results
+          path: resolver-matrix-artifacts/*
+
+  host-regression:
+    concurrency:
+      group: linux-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    needs: resolver-validate
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y build-essential python3
+      - name: Static analysis (-Werror on core)
+        run: |
+          CFLAGS="-O2 -Wall -Wextra -Werror -std=c11 -Icompat -I. -ITeslaSMSOutBypass -ITeslaSMSOutBypass/include -Itools"
+          cc $CFLAGS -c tools/out_sms_macho_map.c -o /tmp/map.o
+          cc $CFLAGS -c TeslaSMSOutBypass/src/out_sms_gate_core.c -o /tmp/core.o
+
+  build-rootless:
+    concurrency:
+      group: macos-build-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: macos-14
+    needs: resolver-validate
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/write_out_sms_pin_placeholder.sh TeslaSMSOutBypass/include/out_sms_pin_generated.h
+      - run: brew install ldid-procursus make
+      - uses: actions/checkout@v4
+        with:
+          repository: roothide/theos
+          path: theos
+          submodules: recursive
+      - name: Install iPhoneOS SDK
+        run: |
+          export THEOS="${GITHUB_WORKSPACE}/theos"
+          cd theos && ./bin/install-sdk iPhoneOS16.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - name: Build placeholder rootless packages
+        run: |
+          export THEOS="${GITHUB_WORKSPACE}/theos"
+          export PATH="${THEOS}/bin:${PATH}"
+          gmake clean package
+          gmake -C TeslaSMSOutBypass clean package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-rootless
+          path: |
+            packages/*.deb
+            TeslaSMSOutBypass/packages/*.deb
+          if-no-files-found: error

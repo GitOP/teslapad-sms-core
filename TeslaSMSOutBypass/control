@@ -1,0 +1,10 @@
+Package: com.gitop.teslapadsmsoutbypass
+Name: Tesla SMS Out Bypass (EXPERIMENTAL)
+Description: INACTIVE CommCenter experiment: outbound SMS device-policy gate hook + on-device rollback staging. Default OFF — requires explicit arm file. Marked experimental; not for production.
+Version: 0.2.4
+Architecture: iphoneos-arm64
+Maintainer: GitOP
+Author: GitOP
+Section: Tweaks
+Depends: firmware (>= 15.0), ellekit (>= 1.1)
+X-Experimental: base64:SU5BQ1RJVkVfRVhQRVJJTUVOVA==

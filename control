@@ -1,0 +1,9 @@
+Package: com.gitop.teslapadsmsbypass
+Name: TeslaPad SMS Bypass
+Version: 1.0.2
+Architecture: iphoneos-arm64
+Description: CommCenter patch to accept unrestricted MT SMS (pinned iOS 15.8.8 / A8).
+Maintainer: GitOP
+Author: GitOP
+Section: Tweaks
+Depends: firmware (>= 15.0), ellekit (>= 1.1)

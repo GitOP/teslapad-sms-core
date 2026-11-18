@@ -1,0 +1,12 @@
+{
+  "synthetic": true,
+  "generator": "scripts/gen_synth_macho_fixture.py",
+  "cases": [
+    "production_local_scan_placeholder_pin",
+    "token_anchor_hash_not_plus3",
+    "legacy_function_starts_corrupt_fst",
+    "pagezero_filesize_zero_mapper",
+    "linkedit_segment_function_starts",
+    "unique_block_head_gate_selection"
+  ]
+}

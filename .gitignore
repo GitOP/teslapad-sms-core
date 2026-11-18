@@ -1,0 +1,15 @@
+.theos/
+packages/
+obj/
+*.deb
+.DS_Store
+TeslaSMSOutBypass/packages/
+TeslaSMSOutBypass/include/out_sms_pin_generated.h
+private/
+private/**
+*commcenter_pin*
+synth-fixture/runtime_image.bin
+synth-fixture/windows/*.bin
+resolver-matrix-artifacts/
+__pycache__/
+*.rej
