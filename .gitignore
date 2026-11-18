@@ -5,8 +5,8 @@ obj/
 .DS_Store
 TeslaSMSOutBypass/packages/
 TeslaSMSOutBypass/include/out_sms_pin_generated.h
-private/
-private/**
+private/*
+!private/commcenter_pin.env.example
 *commcenter_pin*
 synth-fixture/runtime_image.bin
 synth-fixture/windows/*.bin

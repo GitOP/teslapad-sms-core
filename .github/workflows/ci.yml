@@ -1,4 +1,5 @@
 name: teslapad-sms-core CI
+# Post-history-rewrite scrubbed tree (placeholder pins + synthetic fixtures).
 
 on:
   push:
