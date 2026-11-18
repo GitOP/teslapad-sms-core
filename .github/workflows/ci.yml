@@ -19,7 +19,7 @@ jobs:
   resolver-validate:
     concurrency:
       group: linux-${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,8 +34,8 @@ jobs:
 
   host-regression:
     concurrency:
-      group: linux-${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
+      group: linux-regression-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     needs: resolver-validate
     steps:
@@ -46,6 +46,8 @@ jobs:
           CFLAGS="-O2 -Wall -Wextra -Werror -std=c11 -Icompat -I. -ITeslaSMSOutBypass -ITeslaSMSOutBypass/include -Itools"
           cc $CFLAGS -c tools/out_sms_macho_map.c -o /tmp/map.o
           cc $CFLAGS -c TeslaSMSOutBypass/src/out_sms_gate_core.c -o /tmp/core.o
+      - name: SMS-out rollback dry-run
+        run: bash scripts/sms-out-rollback-dryrun.sh
 
   build-rootless:
     concurrency:
