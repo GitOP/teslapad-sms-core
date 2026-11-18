@@ -53,7 +53,7 @@ jobs:
     concurrency:
       group: macos-build-${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: false
-    runs-on: macos-14
+    runs-on: macos-15
     needs: resolver-validate
     steps:
       - uses: actions/checkout@v4
